@@ -12,14 +12,14 @@ safesearch:'true'
 }
 
 
-let gallary = '';
+
 const form = document.querySelector("#search-form");
 const divEl = document.querySelector(".gallery");
 const butEl = document.querySelector(".load-more");
 
 let valueIn="";
 let page=1;
-
+let gallary = "";
 
 form.addEventListener("submit", takeValue);
 butEl.addEventListener("click", takeNewPicture);
@@ -64,13 +64,14 @@ async function takeNewPicture(e) {
    const response = await axios.get(
      `${url}/?key=${KEY_PIX}&q=${text}&${settings}&per_page=40&page=${page}`
    );
+   
  const  pictures = await response.data;
    if (pictures.hits.length === 0) {
     removeVisibleBut();
     Notiflix.Notify.info(
        "Sorry, there are no images matching your search query. Please try again."
      );
-    return;
+    // return;
    } 
 ;
    return pictures;
@@ -90,10 +91,12 @@ async function takeValue(e) {
   if (valueIn && !"")
     try {
       const { hits } = await fetchCPictures(valueIn);
+      if (hits.length === 0){
+        removeVisibleBut();
+      } else{
       createListPictures(hits);
-      addVisibleBut();
-
-    } catch (error) {
+      addVisibleBut();}
+     } catch (error) {
       console.log(error);
     }
 }
